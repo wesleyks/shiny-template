@@ -21,11 +21,11 @@ classdef ShinyTemplate < handle
             position = -1;
         end
         
-        function [matchStart, matchEnd] = findMatchingTag(this, start, stop, token)
+        function [matchStart, matchEnd, bisectStart, bisectEnd] = findMatchingTag(this, start, stop, token, bisectToken)
             [allStarts, allEnds] = regexp(this.templateString(start:stop), '{%.*?%}');
             depth = 1;
             for i = 1:length(allStarts)
-                if regexp(this.templateString((allStarts(i) + start - 1):(allEnds(i)) + start - 1), strcat('{%\s*end', token, '\s*%}'))
+                if regexp(this.templateString((allStarts(i) + start - 1):(allEnds(i)) + start - 1), strcat('{%\s*', token, '\s*%}'))
                     depth = depth - 1;
                 else
                     depth = depth + 1;
@@ -59,10 +59,14 @@ classdef ShinyTemplate < handle
                         if (i - 1 >= start)
                             output{length(output) + 1} = {'text', this.templateString(last:(i - 1))};
                         end
-                        [matchTagStart, matchTagEnd] = this.findMatchingTag(closePos, stop, controlTokens{1});
-                        innerParsed = this.parseString(closePos + 2, matchTagStart - 1);
-                        output{length(output) + 1} = {controlTokens{1}, {controlTokens{2:end}}, innerParsed};
-                        last = matchTagEnd + 1;
+                        if strcmp(controlTokens{1}, 'for')
+                            [matchTagStart, matchTagEnd] = this.findMatchingTag(closePos, stop, 'endfor', 0);
+                            innerParsed = this.parseString(closePos + 2, matchTagStart - 1);
+                            output{length(output) + 1} = {controlTokens{1}, {controlTokens{2:end}}, innerParsed};
+                            last = matchTagEnd + 1;
+                        elseif strcmp(controlTokens{1}, 'if')
+                            [matchTagStart, matchTagEnd, bisectTagStart, bisectTagEnd] = this.findMatchingTag(closePos, stop, 'endif', 'else');
+                        end
                         i = last - 1;
                 end
                 i = i + 1;
