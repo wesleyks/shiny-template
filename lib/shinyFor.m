@@ -1,6 +1,6 @@
 function output = shinyFor(st, data, context, localContext)
-%SHINYFOR Summary of this function goes here
-%   Detailed explanation goes here
+%SHINYFOR implements shiny template's for loop
+%   
     output = {};
     localName = data{2}{1};
     iterable = st.lookupValue(data{2}{3}, context, localContext);
