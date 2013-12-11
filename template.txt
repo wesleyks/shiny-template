@@ -1,8 +1,0 @@
-<h1>{{ title }}</h1>
-<h2>{{ author.name }}</h2>
-<h3>{{ author.phone }}</h3>
-<ul>
-{% for food in foods %}
-    <li>{{ food }}</li>
-{% endfor %}
-</ul>
