@@ -296,11 +296,7 @@ classdef ShinyTemplate < handle
             %of strings
             %   Inputs:
             %       data - the parsed template string
-            %       context - a struct whos properties are variables to be
-            %       used
-            %       localContext - the local context
-            %   Outputs:
-            %       output - a cell array of strings
+            %       context - a struct whos properties are 
             output = {};
             for i = 1:length(data)
                 switch data{i}{1}
